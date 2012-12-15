@@ -8,13 +8,17 @@ import java.io.FileInputStream;
 import java.security.KeyStore;
 import java.security.PublicKey;
 import java.security.Signature;
+import java.security.cert.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
  */
 public class SignatureVerificator {
 
-    public static void verifySignature(String keyStoreFileName, String fileToCheckSignName, String signatureFileName, String aliasName, char[] keyStorePassword) throws Exception {
+    public static void verifySignature(String keyStoreFileName, String fileToCheckSignName, String signatureFileName, String aliasName, String aliasNameCA, char[] keyStorePassword) throws Exception {
         //Import Certificate and its Public Key from KeyStore
         KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
         FileInputStream keyStoreInputStream = new FileInputStream(keyStoreFileName);
@@ -56,6 +60,17 @@ public class SignatureVerificator {
             Notifier.showMessage("Fail", "Signature not verified. Signature, file or certificate is wrong");
         }
 
+        //Validating of certificate (can it be trusted by CA? If exception - it is not trusted by CA)
+        java.security.cert.Certificate trustCertificate = keyStore.getCertificate(aliasNameCA);
+        TrustAnchor anchor = new TrustAnchor((X509Certificate) trustCertificate, null);
+        PKIXParameters params = new PKIXParameters(Collections.singleton(anchor));
+        params.setRevocationEnabled(false);
+        CertPathValidator cpv = CertPathValidator.getInstance("PKIX");
+        CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+        List<Certificate> listOfCertificates = new ArrayList<Certificate>();
+        listOfCertificates.add(certificate);
+        cpv.validate(certificateFactory.generateCertPath(listOfCertificates), params);
+
         //Get certificate owner information and show it
         String certificateText = certificate.toString();
         int certificateBegin = certificateText.indexOf("Version");
@@ -63,6 +78,7 @@ public class SignatureVerificator {
         if (certificateBegin != -1 && certificateEnd != -1) {
             certificateText = certificateText.substring(certificateBegin, certificateEnd);
         }
+        System.out.println(certificate.toString());
         new InfoFrame("Certificate info", certificateText);
     }
 

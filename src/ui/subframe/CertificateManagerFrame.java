@@ -35,7 +35,7 @@ public class CertificateManagerFrame extends JFrame {
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.setLayout(null);
         this.setResizable(false);
-        this.setSize(410, 580);
+        this.setSize(410, 440);
         initFrameComponents();
         initBehavior();
         this.setVisible(true);

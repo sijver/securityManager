@@ -16,8 +16,9 @@ public class SignatureVerificatorFrame extends JFrame {
     private JFileChooser keyStoreFileChooser;
     private JButton openFileToCheckSignButton;
     private JFileChooser fileToCheckSignChooser;
-    private JButton saveSignatureButton;
+    private JButton openSignatureButton;
     private JFileChooser signatureFileChooser;
+    private JTextField aliasNameCATextField;
     private JTextField aliasNameTextField;
     private JPasswordField keyStorePasswordField;
     private JButton finishButton;
@@ -54,10 +55,10 @@ public class SignatureVerificatorFrame extends JFrame {
         openFileToCheckSignButton.setLocation(80, 130);
         openFileToCheckSignButton.setSize(250, 50);
 
-        saveSignatureButton = new JButton("Specify signature file");
-        this.add(saveSignatureButton);
-        saveSignatureButton.setLocation(80, 220);
-        saveSignatureButton.setSize(250, 50);
+        openSignatureButton = new JButton("Specify signature file");
+        this.add(openSignatureButton);
+        openSignatureButton.setLocation(80, 220);
+        openSignatureButton.setSize(250, 50);
 
         JLabel aliasNameLabel = new JLabel("Alias name:");
         this.add(aliasNameLabel);
@@ -69,19 +70,29 @@ public class SignatureVerificatorFrame extends JFrame {
         aliasNameTextField.setLocation(180, 300);
         aliasNameTextField.setSize(190, 25);
 
+        JLabel aliasNameCALabel = new JLabel("CA Alias name:");
+        this.add(aliasNameCALabel);
+        aliasNameCALabel.setLocation(40, 350);
+        aliasNameCALabel.setSize(130, 25);
+
+        aliasNameCATextField = new JTextField();
+        this.add(aliasNameCATextField);
+        aliasNameCATextField.setLocation(180, 350);
+        aliasNameCATextField.setSize(190, 25);
+
         JLabel keyStorePasswordLabel = new JLabel("KeyStore password:");
         this.add(keyStorePasswordLabel);
-        keyStorePasswordLabel.setLocation(40, 350);
+        keyStorePasswordLabel.setLocation(40, 400);
         keyStorePasswordLabel.setSize(130, 25);
 
         keyStorePasswordField = new JPasswordField();
         this.add(keyStorePasswordField);
-        keyStorePasswordField.setLocation(180, 350);
+        keyStorePasswordField.setLocation(180, 400);
         keyStorePasswordField.setSize(190, 25);
 
         finishButton = new JButton("Check Signature");
         this.add(finishButton);
-        finishButton.setLocation(80, 410);
+        finishButton.setLocation(80, 460);
         finishButton.setSize(250, 50);
     }
 
@@ -106,7 +117,7 @@ public class SignatureVerificatorFrame extends JFrame {
             }
         });
 
-        saveSignatureButton.addActionListener(new ActionListener() {
+        openSignatureButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 signatureFileChooser = new JFileChooser();
@@ -120,7 +131,7 @@ public class SignatureVerificatorFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    SignatureVerificator.verifySignature(keyStoreFileName, fileToCheckSignName, signatureFileName, aliasNameTextField.getText(), keyStorePasswordField.getPassword());
+                    SignatureVerificator.verifySignature(keyStoreFileName, fileToCheckSignName, signatureFileName, aliasNameTextField.getText(), aliasNameCATextField.getText(), keyStorePasswordField.getPassword());
                 } catch (Exception exc) {
                     ExceptionHandler.printException(exc);
                 }
